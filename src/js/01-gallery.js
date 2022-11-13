@@ -1,17 +1,14 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 // Add imports above this line
+
 import { galleryItems } from './gallery-items';
 // Change code below this line
 
-import { GalleryItemsAdditional } from './addGallery-items';
-
-const galleryItemsCommon = [...galleryItems, ...GalleryItemsAdditional];
 const galleryList = document.querySelector('.gallery');
-
-const markupGalleryList = galleryItemsCommon
+const markupGalleryList = galleryItems
   .map(
-    ({ original, preview, description }) => `<div class="gallery__item"> 
+    ({ original, preview, description }) => `<div class="gallery__item">
     <a class="gallery__item" href="${original}">
     <img class="gallery__image" src="${preview}" alt="${description}"/>
     </a>
