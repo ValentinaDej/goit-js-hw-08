@@ -6,15 +6,29 @@ const refs = {
 
 const LOCALSTORAGE_KEY = 'feedback-form-state';
 
-refs.form.addEventListener('input', throttle(onInputForm, 500));
-refs.form.addEventListener('submit', onSubmitForm);
-window.addEventListener('load', onLoadForm);
+const load = key => {
+  try {
+    const serializedState = localStorage.getItem(key);
+    return serializedState === null ? undefined : JSON.parse(serializedState);
+  } catch (error) {
+    console.error('Get state error: ', error.message);
+  }
+};
+
+const save = (key, value) => {
+  try {
+    const serializedState = JSON.stringify(value);
+    localStorage.setItem(key, serializedState);
+  } catch (error) {
+    console.error('Set state error: ', error.message);
+  }
+};
 
 function onInputForm(e) {
   e.preventDefault();
   const email = refs.form.elements.email.value;
   const message = refs.form.elements.message.value;
-  localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify({ message, email }));
+  save(LOCALSTORAGE_KEY, { message, email });
 }
 
 function onSubmitForm(e) {
@@ -28,8 +42,11 @@ function onSubmitForm(e) {
 
 function onLoadForm(e) {
   e.preventDefault();
-  const savedSettings = localStorage.getItem(LOCALSTORAGE_KEY);
-  const parsedSettings = JSON.parse(savedSettings);
+  const parsedSettings = load(LOCALSTORAGE_KEY);
   refs.form.elements.email.value = parsedSettings.email;
   refs.form.elements.message.value = parsedSettings.message;
 }
+
+refs.form.addEventListener('input', throttle(onInputForm, 500));
+refs.form.addEventListener('submit', onSubmitForm);
+window.addEventListener('load', onLoadForm);
